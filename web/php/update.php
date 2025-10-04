@@ -1,24 +1,30 @@
 <?php
-// Include database connection
+// Inclui a conexão com o banco
 include_once 'db.php';
 
-// Check if form is submitted
+// Verifica se o formulário foi enviado
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Get form data
+    // Obtém os dados do formulário
     $id = $_POST['id'];
-    $name = $_POST['name'];
+    $nome = $_POST['nome'];
     $email = $_POST['email'];
-    $age = $_POST['age'];
+    $senha = $_POST['senha'];
+    $data_cad = $_POST['data_cad'];
+    $cpf = $_POST['cpf'];
 
-    // Update data in database
-    $sql = "UPDATE users SET name='$name', email='$email', age='$age' WHERE id='$id'";
-    if (mysqli_query($conn, $sql)) {
-        echo "Record updated successfully";
+    // Prepara a query para evitar SQL Injection
+    $sql = "UPDATE Usuario SET nome=?, email=?, senha=?, data_cad=?, cpf=? WHERE id=?";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "sssssi", $nome, $email, $senha, $data_cad, $cpf, $id);
+
+    if (mysqli_stmt_execute($stmt)) {
+        echo "Registro atualizado com sucesso";
     } else {
-        echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+        echo "Erro: " . mysqli_error($conn);
     }
+    mysqli_stmt_close($stmt);
 }
 
-// Close database connection
+// Fecha a conexão
 mysqli_close($conn);
 ?>

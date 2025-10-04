@@ -1,23 +1,29 @@
 <?php
-// Include database connection
+// Inclui a conexão com o banco
 include_once 'db.php';
 
-// Check if form is submitted
+// Verifica se o formulário foi enviado
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Get form data
-    $name = $_POST['name'];
+    // Obtém os dados do formulário
+    $nome = $_POST['nome'];
     $email = $_POST['email'];
-    $age = $_POST['age'];
+    $senha = password_hash($_POST['senha'], PASSWORD_DEFAULT); // Criptografa a senha
+    $data_cad = date('Y-m-d'); // Data de cadastro atual
+    $cpf = $_POST['cpf'];
 
-    // Insert data into database
-    $sql = "INSERT INTO users (name, email, age) VALUES ('$name', '$email', '$age')";
-    if (mysqli_query($conn, $sql)) {
-        echo "New record created successfully";
+    // Prepara a query para evitar SQL Injection
+    $stmt = $conn->prepare("INSERT INTO Usuario (nome, email, senha, data_cad, cpf) VALUES (?, ?, ?, ?, ?)");
+    $stmt->bind_param("sssss", $nome, $email, $senha, $data_cad, $cpf);
+
+    if ($stmt->execute()) {
+        echo "Usuário cadastrado com sucesso!";
     } else {
-        echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+        echo "Erro: " . $stmt->error;
     }
+
+    $stmt->close();
 }
 
-// Close database connection
-mysqli_close($conn);
+// Fecha a conexão
+$conn->close();
 ?>

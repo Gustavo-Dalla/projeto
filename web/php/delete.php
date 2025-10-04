@@ -1,21 +1,25 @@
 <?php
-// Include database connection
+// Inclui a conexão com o banco
 include_once 'db.php';
 
-// Check if form is submitted
+// Verifica se o formulário foi enviado
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Get form data
+    // Obtém o id do usuário
     $id = $_POST['id'];
 
-    // Delete data from database
-    $sql = "DELETE FROM users WHERE id='$id'";
-    if (mysqli_query($conn, $sql)) {
-        echo "Record deleted successfully";
+    // Prepara a query para deletar o usuário
+    $stmt = $conn->prepare("DELETE FROM Usuario WHERE id = ?");
+    $stmt->bind_param("i", $id);
+
+    if ($stmt->execute()) {
+        echo "Usuário deletado com sucesso";
     } else {
-        echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+        echo "Erro ao deletar: " . $stmt->error;
     }
+
+    $stmt->close();
 }
 
-// Close database connection
-mysqli_close($conn);
+// Fecha a conexão
+$conn->close();
 ?>

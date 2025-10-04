@@ -1,21 +1,22 @@
 <?php
-// Include database connection
+// Inclui a conexão com o banco de dados
 include_once 'db.php';
 
-// Fetch data from database
-$sql = "SELECT * FROM users";
+// Consulta dados da tabela Usuario
+$sql = "SELECT id, nome, email, data_cad, cpf FROM Usuario";
 $result = mysqli_query($conn, $sql);
 
-// Check if any records found
+// Verifica se há registros
 if (mysqli_num_rows($result) > 0) {
-    // Output data of each row
+    // Exibe os dados de cada usuário
     while ($row = mysqli_fetch_assoc($result)) {
-        echo "Name: " . $row["name"] . " - Email: " . $row["email"] . " - Age: " . $row["age"] . "<br>";
+        echo "ID: " . $row["id"] . " - Nome: " . $row["nome"] . " - Email: " . $row["email"] .
+             " - Data Cadastro: " . $row["data_cad"] . " - CPF: " . $row["cpf"] . "<br>";
     }
 } else {
-    echo "No records found";
+    echo "Nenhum registro encontrado";
 }
 
-// Close database connection
+// Fecha a conexão
 mysqli_close($conn);
 ?>
